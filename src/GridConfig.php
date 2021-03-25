@@ -321,7 +321,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		if (null === $this->_saveUrl) {
 			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->gridConfig->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
 		}
-		return $this->saveUrl;
+		return $this->_saveUrl;
 	}
 
 	/**
