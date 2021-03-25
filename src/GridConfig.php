@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\widgets;
+namespace pozitronik\grid_config;
 
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ReflectionHelper;
@@ -149,7 +149,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		parent::init();
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
-		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app, 'gridConfig.saveUrl');
+		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridConfig.saveUrl');
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
@@ -319,7 +319,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	 */
 	public function getSaveUrl():string {
 		if (null === $this->_saveUrl) {
-			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->gridConfig->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
+			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->modules->gridConfig->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
 		}
 		return $this->_saveUrl;
 	}

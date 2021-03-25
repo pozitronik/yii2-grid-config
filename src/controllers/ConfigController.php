@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\widget\controllers;
+namespace pozitronik\grid_config\controllers;
 
+use pozitronik\grid_config\GridConfig;
 use pozitronik\helpers\ArrayHelper;
-use pozitronik\widgets\GridConfig;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -25,6 +25,6 @@ class ConfigController extends Controller {
 		$config = new GridConfig();
 		$config->load(Yii::$app->request->post());
 		$config->apply();
-		return ($config->fromUrl)?$this->redirect($config->fromUrl):ArrayHelper::getValue(Yii::$app, 'gridConfig.defaultRedirect');
+		return ($config->fromUrl)?$this->redirect($config->fromUrl):ArrayHelper::getValue(Yii::$app->modules, 'gridConfig.defaultRedirect');
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\widgets;
+namespace pozitronik\grid_config;
 
 use yii\web\AssetBundle;
 
