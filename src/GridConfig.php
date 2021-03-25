@@ -149,7 +149,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		parent::init();
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
-
+		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app, 'gridConfig.saveUrl');
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
@@ -318,7 +318,10 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * @throws Throwable
 	 */
 	public function getSaveUrl():string {
-		return $this->_saveUrl;
+		if (null === $this->_saveUrl) {
+			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->gridConfig->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
+		}
+		return $this->saveUrl;
 	}
 
 	/**
