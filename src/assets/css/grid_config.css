@@ -1,0 +1,11 @@
+table.grid-config-sortables {
+	width: 100%;
+}
+
+table.grid-config-sortables th:first-child {
+	width: 50%;
+}
+
+table.grid-config-sortables th:last-child {
+	width: 50%;
+}
