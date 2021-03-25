@@ -94,7 +94,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * @return string
 	 */
 	public static function optionsButton(string $gridId):string {
-		return Html::button('<i class="glyphicon glyphicon-option-horizontal"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$gridId}').modal('show')")]);
+		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$gridId}').modal('show')")]);
 	}
 
 	/**
