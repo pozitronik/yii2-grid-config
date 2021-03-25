@@ -29,7 +29,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"pozitronik\\widgets\\": "src"
+			"pozitronik\\grid_config\\": "src"
 		}
 	},
 	"config": {
