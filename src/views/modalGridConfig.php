@@ -8,8 +8,8 @@ declare(strict_types = 1);
 
 use kartik\sortable\Sortable;
 use kartik\switchinput\SwitchInput;
-use pozitronik\widgets\GridConfig;
-use pozitronik\widgets\GridConfigAssets;
+use pozitronik\grid_config\GridConfig;
+use pozitronik\grid_config\GridConfigAssets;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\web\JsExpression;
