@@ -25,6 +25,6 @@ class ConfigController extends Controller {
 		$config = new GridConfig();
 		$config->load(Yii::$app->request->post());
 		$config->apply();
-		return ($config->fromUrl)?$this->redirect($config->fromUrl):ArrayHelper::getValue(Yii::$app->modules, 'gridConfig.defaultRedirect');
+		return ($config->fromUrl)?$this->redirect($config->fromUrl):ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.defaultRedirect');
 	}
 }
