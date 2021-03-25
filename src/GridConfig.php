@@ -39,6 +39,7 @@ use yii\web\JsExpression;
  * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
  */
 class GridConfig extends Model implements ViewContextInterface {
+	private const DEFAULT_SAVE_URL = 'config/apply';
 	public $user_id;
 
 	private $_id = '';
@@ -149,7 +150,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		parent::init();
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
-		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.saveUrl');
+		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
@@ -319,7 +320,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	 */
 	public function getSaveUrl():string {
 		if (null === $this->_saveUrl) {
-			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->modules->gridConfig->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
+			throw new InvalidConfigException('Не указан параметр saveUrl. Укажите его вручную или через Yii::$app->modules->gridconfig->params->saveUrl');//он должен содержать эндпойнт ajax-приёмника настроек
 		}
 		return $this->_saveUrl;
 	}
