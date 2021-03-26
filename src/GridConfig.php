@@ -37,10 +37,13 @@ use yii\web\JsExpression;
  * @property string $visibleColumnsJson -- виртуальный атрибут для передачи сериализованного набора данных из Sortable-виджета (https://github.com/lukasoppermann/html5sortable)
  *
  * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
+ * @property bool $ajaxApply -- получение модалки настроек/сохранение настроек через ajax, в фоне
  */
 class GridConfig extends Model implements ViewContextInterface {
 	private const DEFAULT_SAVE_URL = 'config/apply';
+	private const DEFAULT_LOAD_URL = 'config/load';
 	public $user_id;
+	public $ajaxApply = true;
 
 	private $_id = '';
 	private $_columns;
@@ -48,6 +51,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	private $_grid;
 	private $_gridPresent = false;
 	private $_saveUrl;
+	private $_loadUrl;
 	private $_visibleColumnsJson = '';
 	/**
 	 * @var int|null
@@ -66,6 +70,8 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * Для удобства конфигурации симулируем виджет
 	 * @param array $config
 	 * @return string
+	 * @throws InvalidConfigException
+	 * @throws Throwable
 	 * @noinspection PhpPossiblePolymorphicInvocationInspection -- мы можем обращаться к свойствам грида картика, если используется он, но опираемся на базовый грид
 	 * @noinspection PhpUndefinedFieldInspection
 	 */
@@ -77,11 +83,11 @@ class GridConfig extends Model implements ViewContextInterface {
 		 */
 		if ($gridConfig->grid->hasProperty('replaceTags')) {
 			/*Добавим кнопку вызова модалки настроек*/
-			$gridConfig->grid->replaceTags['{options}'] = static::optionsButton($gridConfig->grid->id);
+			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
 			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
 			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) $gridConfig->grid->panelHeadingTemplate = '<div class="pull-left m-r-sm">{options}</div>'.$gridConfig->grid->panelHeadingTemplate;
 		} else {
-			$gridConfig->grid->layout = static::optionsButton($gridConfig->grid->id).$gridConfig->grid->layout;
+			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout;
 		}
 
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
@@ -90,11 +96,16 @@ class GridConfig extends Model implements ViewContextInterface {
 
 	/**
 	 * Кнопка вызова модалки конфигуратора
-	 * @param string $gridId -- идентификатор грида, в который инжектится кнопка
 	 * @return string
+	 * @throws InvalidConfigException
+	 * @throws Throwable
 	 */
-	public static function optionsButton(string $gridId):string {
-		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$gridId}').modal('show')")]);
+	public function renderOptionsButton():string {
+		if ($this->ajaxApply) {
+			return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression('AjaxModal("'.GridConfigModule::to([$this->_loadUrl, 'id' => $this->grid->id]).'", "grid-config-modal-'.$this->grid->id.'")')]);
+		}
+
+		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->grid->id}').modal('show')")]);
 	}
 
 	/**
@@ -151,6 +162,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
+		$this->_loadUrl = ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.loadUrl', GridConfigModule::to(self::DEFAULT_LOAD_URL));
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
