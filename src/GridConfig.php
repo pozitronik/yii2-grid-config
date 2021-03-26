@@ -162,7 +162,7 @@ class GridConfig extends Model implements ViewContextInterface {
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
-		$this->_loadUrl = ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.loadUrl', GridConfigModule::to(self::DEFAULT_LOAD_URL));
+		$this->_loadUrl = ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.loadUrl', self::DEFAULT_LOAD_URL);
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
