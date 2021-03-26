@@ -243,10 +243,10 @@ class GridConfig extends Model implements ViewContextInterface {
 	}
 
 	/**
-	 * @return GridView
+	 * @return null|GridView
 	 * @throws InvalidConfigException
 	 */
-	public function getGrid():GridView {
+	public function getGrid():?GridView {
 		return $this->_grid;
 	}
 
