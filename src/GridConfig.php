@@ -25,7 +25,7 @@ use yii\web\JsExpression;
  * @property null|int $maxPageSize -- максимальный лимит для задаваемого размера страницы
  * @property null|bool $floatHeader -- плавающий заголовок (если поддерживается)
  * @property null|string $fromUrl -- redirection url
- * @property GridView $grid -- можно передать конфигурируемый грид, либо задать класс через $gridClass
+ * @property GridView $grid -- конфигурируемый грид
  * @property array[] $columns -- все доступные колонки грида
  * @property array[] $visibleColumns -- все отображаемые колонки грида (с сохранением порядка сортировки)
  * @property string[]|null $visibleColumnsLabels -- сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
