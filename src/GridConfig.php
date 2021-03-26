@@ -77,6 +77,11 @@ class GridConfig extends Model implements ViewContextInterface {
 	 */
 	public static function widget(array $config = []):string {
 		$gridConfig = new self($config);
+
+		if (null === $gridConfig->grid) {//проверка здесь, а не в геттере, т.к. грид нам нужен только при рендере виджета
+			throw new InvalidConfigException('Параметр grid должен ссылаться на GridView');
+		}
+
 		/**
 		 * Если мы используем GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
 		 * Иначе просто модифицируем лайаут
@@ -241,9 +246,6 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * @throws InvalidConfigException
 	 */
 	public function getGrid():GridView {
-		if (null === $this->_grid) {
-			throw new InvalidConfigException('Параметр grid должен ссылаться на GridView');
-		}
 		return $this->_grid;
 	}
 
