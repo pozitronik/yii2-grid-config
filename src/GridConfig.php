@@ -114,12 +114,11 @@ class GridConfig extends Model implements ViewContextInterface {
 	}
 
 	/**
-	 * @return string
+	 * Очевидно
 	 */
 	public function endGrid():string {
 		$this->grid::end();
-		/*При аяксовой загрузке не рендерим модалку*/
-		return $this->ajaxApply?'':Yii::$app->view->render('config/modalGridConfig', ['model' => $this], $this);
+		return Yii::$app->view->render('config/modalGridConfig', ['model' => $this], $this);
 	}
 
 	/**
