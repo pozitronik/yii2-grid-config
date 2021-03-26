@@ -63,6 +63,43 @@ class GridConfig extends Model implements ViewContextInterface {
 	private $_userOptions;
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function attributeLabels():array {
+		return [
+			'pageSize' => 'Максимальное количество записей на одной странице (0 - без ограничения)',
+			'visibleColumnsLabels' => 'Выбор видимых колонок',
+			'floatHeader' => 'Плавающий заголовок'
+		];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function rules():array {
+		return [
+			[['id', 'fromUrl'], 'string'],
+			[['pageSize'], 'integer'],
+			[['pageSize'], 'filter', 'filter' => 'intval'],
+			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson'], 'safe'],
+			[['floatHeader'], 'boolean']
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function init():void {
+		parent::init();
+		$this->user_id = $this->user_id??Yii::$app->user->id;
+		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
+		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
+		$attributes = $this->_userOptions->get($this->formName().$this->id);
+		$this->load($attributes, '');
+		$this->nameColumns();
+	}
+
+	/**
 	 * Для удобства конфигурации симулируем виджет
 	 * @param array $config
 	 * @return string
@@ -91,15 +128,6 @@ class GridConfig extends Model implements ViewContextInterface {
 	}
 
 	/**
-	 * Кнопка вызова модалки конфигуратора
-	 * @return string
-	 * @throws Throwable
-	 */
-	public function renderOptionsButton():string {
-		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->grid->id}').modal('show')")]);
-	}
-
-	/**
 	 * Очевидно
 	 */
 	public function endGrid():string {
@@ -107,18 +135,6 @@ class GridConfig extends Model implements ViewContextInterface {
 		return Yii::$app->view->render('config/modalGridConfig', ['model' => $this], $this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function rules():array {
-		return [
-			[['id', 'fromUrl'], 'string'],
-			[['pageSize'], 'integer'],
-			[['pageSize'], 'filter', 'filter' => 'intval'],
-			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson'], 'safe'],
-			[['floatHeader'], 'boolean']
-		];
-	}
 
 	/**
 	 * @throws InvalidConfigException
@@ -135,30 +151,6 @@ class GridConfig extends Model implements ViewContextInterface {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function attributeLabels():array {
-		return [
-			'pageSize' => 'Максимальное количество записей на одной странице (0 - без ограничения)',
-			'visibleColumnsLabels' => 'Выбор видимых колонок',
-			'floatHeader' => 'Плавающий заголовок'
-		];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function init():void {
-		parent::init();
-		$this->user_id = $this->user_id??Yii::$app->user->id;
-		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
-		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
-		$attributes = $this->_userOptions->get($this->formName().$this->id);
-		$this->load($attributes, '');
-		$this->nameColumns();
-	}
-
-	/**
 	 * @throws Throwable
 	 */
 	private function nameColumns():void {
@@ -170,6 +162,15 @@ class GridConfig extends Model implements ViewContextInterface {
 			$columnCount++;
 		}
 		$this->columns = $namedColumns;
+	}
+
+	/**
+	 * Кнопка вызова модалки конфигуратора
+	 * @return string
+	 * @throws Throwable
+	 */
+	public function renderOptionsButton():string {
+		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
 	}
 
 	/**
