@@ -37,13 +37,10 @@ use yii\web\JsExpression;
  * @property string $visibleColumnsJson -- виртуальный атрибут для передачи сериализованного набора данных из Sortable-виджета (https://github.com/lukasoppermann/html5sortable)
  *
  * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
- * @property bool $ajaxApply -- получение модалки настроек/сохранение настроек через ajax, в фоне
  */
 class GridConfig extends Model implements ViewContextInterface {
 	private const DEFAULT_SAVE_URL = 'config/apply';
-	private const DEFAULT_LOAD_URL = 'config/load';
 	public $user_id;
-	public $ajaxApply = true;
 
 	private $_id = '';
 	private $_columns;
@@ -51,7 +48,6 @@ class GridConfig extends Model implements ViewContextInterface {
 	private $_grid;
 	private $_gridPresent = false;
 	private $_saveUrl;
-	private $_loadUrl;
 	private $_visibleColumnsJson = '';
 	/**
 	 * @var int|null
@@ -70,17 +66,12 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * Для удобства конфигурации симулируем виджет
 	 * @param array $config
 	 * @return string
-	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 * @noinspection PhpPossiblePolymorphicInvocationInspection -- мы можем обращаться к свойствам грида картика, если используется он, но опираемся на базовый грид
 	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public static function widget(array $config = []):string {
 		$gridConfig = new self($config);
-
-		if (null === $gridConfig->grid) {//проверка здесь, а не в геттере, т.к. грид нам нужен только при рендере виджета
-			throw new InvalidConfigException('Параметр grid должен ссылаться на GridView');
-		}
 
 		/**
 		 * Если мы используем GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
@@ -102,14 +93,9 @@ class GridConfig extends Model implements ViewContextInterface {
 	/**
 	 * Кнопка вызова модалки конфигуратора
 	 * @return string
-	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */
 	public function renderOptionsButton():string {
-		if ($this->ajaxApply) {
-			return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression('AjaxModal("'.GridConfigModule::to([$this->_loadUrl, 'id' => $this->grid->id]).'", "grid-config-modal-'.$this->grid->id.'")')]);
-		}
-
 		return Html::button('<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->grid->id}').modal('show')")]);
 	}
 
@@ -167,7 +153,6 @@ class GridConfig extends Model implements ViewContextInterface {
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
-		$this->_loadUrl = ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.loadUrl', self::DEFAULT_LOAD_URL);
 		$attributes = $this->_userOptions->get($this->formName().$this->id);
 		$this->load($attributes, '');
 		$this->nameColumns();
@@ -242,10 +227,13 @@ class GridConfig extends Model implements ViewContextInterface {
 	}
 
 	/**
-	 * @return null|GridView
+	 * @return GridView
 	 * @throws InvalidConfigException
 	 */
-	public function getGrid():?GridView {
+	public function getGrid():GridView {
+		if (null === $this->grid) {
+			throw new InvalidConfigException('Параметр grid должен ссылаться на GridView');
+		}
 		return $this->_grid;
 	}
 

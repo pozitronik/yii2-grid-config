@@ -18,21 +18,6 @@ use yii\web\Response;
 class ConfigController extends Controller {
 
 	/**
-	 * @param string $id
-	 * @return string
-	 */
-	public function actionLoad(string $id):string {
-		if (Yii::$app->request->isAjax) {
-			return $this->renderAjax('modalGridConfig', [
-				'model' => new GridConfig(['id' => $id])
-			]);
-		}
-		return $this->render('modalGridConfig', [
-			'model' => new GridConfig(['id' => $id])
-		]);
-	}
-
-	/**
 	 * @return string|Response
 	 * @throws Throwable
 	 * @throws InvalidConfigException
