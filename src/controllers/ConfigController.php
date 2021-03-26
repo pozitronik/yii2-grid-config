@@ -18,10 +18,10 @@ use yii\web\Response;
 class ConfigController extends Controller {
 
 	/**
-	 * @param int $id
+	 * @param string $id
 	 * @return string
 	 */
-	public function actionLoad(int $id):string {
+	public function actionLoad(string $id):string {
 		if (Yii::$app->request->isAjax) {
 			return $this->renderAjax('modalGridConfig', [
 				'model' => new GridConfig(['id' => $id])
