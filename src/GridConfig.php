@@ -232,7 +232,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * @throws InvalidConfigException
 	 */
 	public function getGrid():GridView {
-		if (null === $this->grid) {
+		if (null === $this->_grid) {
 			throw new InvalidConfigException('Параметр grid должен ссылаться на GridView');
 		}
 		return $this->_grid;
