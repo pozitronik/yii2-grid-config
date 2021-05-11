@@ -20,7 +20,6 @@
 		"php": ">=7.4",
 		"pozitronik/yii2-users-options": "dev-master",
 		"pozitronik/yii2-core-tools": "dev-master",
-		"yiisoft/yii2-bootstrap": "~2.0.0",
 		"kartik-v/yii2-sortable": "dev-master",
 		"kartik-v/yii2-widget-switchinput": "dev-master"
 	},
