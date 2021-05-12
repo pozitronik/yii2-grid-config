@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\grid_config;
 
+use kartik\base\BootstrapInterface;
 use kartik\base\BootstrapTrait;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ReflectionHelper;
@@ -39,7 +40,7 @@ use yii\web\JsExpression;
  *
  * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
  */
-class GridConfig extends Model implements ViewContextInterface {
+class GridConfig extends Model implements ViewContextInterface, BootstrapInterface {
 	use BootstrapTrait;
 
 	private const DEFAULT_SAVE_URL = 'config/apply';
