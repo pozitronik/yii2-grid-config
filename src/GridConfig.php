@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\grid_config;
 
+use kartik\base\BootstrapTrait;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ReflectionHelper;
 use pozitronik\users_options\models\UsersOptions;
@@ -39,6 +40,8 @@ use yii\web\JsExpression;
  * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
  */
 class GridConfig extends Model implements ViewContextInterface {
+	use BootstrapTrait;
+
 	private const DEFAULT_SAVE_URL = 'config/apply';
 	public $user_id;
 
@@ -132,9 +135,9 @@ class GridConfig extends Model implements ViewContextInterface {
 	 */
 	public function endGrid():string {
 		$this->grid::end();
-		return Yii::$app->view->render('config/modalGridConfig', ['model' => $this], $this);
+		$bsView = $this->isBs4()?"bs4":"bs3";
+		return Yii::$app->view->render("config/{$bsView}/modalGridConfig", ['model' => $this], $this);
 	}
-
 
 	/**
 	 * @throws InvalidConfigException
@@ -170,7 +173,7 @@ class GridConfig extends Model implements ViewContextInterface {
 	 * @throws Throwable
 	 */
 	public function renderOptionsButton():string {
-		return Html::button('<i class="fas fa-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
+		return Html::button($this->isBs4()?'<i class="fas fa-wrench"></i>':'<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
 	}
 
 	/**
