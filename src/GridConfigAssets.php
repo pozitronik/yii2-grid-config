@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\grid_config;
 
-use yii\web\AssetBundle;
+use kartik\base\AssetBundle;
 
 /**
  * Class GridConfigAssets
