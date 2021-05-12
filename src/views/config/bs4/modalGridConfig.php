@@ -19,5 +19,5 @@ use yii\web\View;
 	'footer' => Html::submitButton('<i class="glyphicon glyphicon-save"></i> Сохранить', ['class' => 'btn btn-success', 'form' => 'grid-config']),//post button outside the form
 	'clientOptions' => ['backdrop' => false]
 ]); ?>
-<?= $this->render("../GridCongForm", compact('model')) ?>
+<?= $this->render("../GridConfigForm", compact('model')) ?>
 <?php Modal::end(); ?>
