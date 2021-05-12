@@ -10,8 +10,6 @@ use kartik\sortable\Sortable;
 use kartik\switchinput\SwitchInput;
 use pozitronik\grid_config\GridConfig;
 use pozitronik\grid_config\GridConfigAssets;
-use yii\bootstrap4\Modal;
-use yii\helpers\Html;
 use yii\web\JsExpression;
 use yii\web\View;
 use yii\widgets\ActiveForm;
@@ -19,12 +17,6 @@ use yii\widgets\ActiveForm;
 GridConfigAssets::register($this);
 ?>
 
-<?php Modal::begin([
-	'id' => "grid-config-modal-{$model->grid->id}",
-	'title' => '<div class="modal-title">Конфигурация:</div>',
-	'footer' => Html::submitButton('<i class="glyphicon glyphicon-save"></i> Сохранить', ['class' => 'btn btn-success', 'form' => 'grid-config']),//post button outside the form
-	'clientOptions' => ['backdrop' => false]
-]); ?>
 <?php $form = ActiveForm::begin(['id' => 'grid-config', 'action' => $model->saveUrl]); ?>
 <div class="row">
 	<div class="col-md-12">
@@ -106,4 +98,3 @@ GridConfigAssets::register($this);
 	</div>
 </div>
 <?php ActiveForm::end(); ?>
-<?php Modal::end(); ?>
