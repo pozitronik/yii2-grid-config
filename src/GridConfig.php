@@ -6,6 +6,7 @@ namespace pozitronik\grid_config;
 use kartik\base\BootstrapInterface;
 use kartik\base\BootstrapTrait;
 use pozitronik\helpers\ArrayHelper;
+use pozitronik\helpers\BootstrapHelper;
 use pozitronik\helpers\ReflectionHelper;
 use pozitronik\users_options\models\UsersOptions;
 use ReflectionClass;
@@ -122,7 +123,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			/*Добавим кнопку вызова модалки настроек*/
 			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
 			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
-			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) $gridConfig->grid->panelHeadingTemplate = '<div class="pull-left m-r-sm">{options}</div>'.$gridConfig->grid->panelHeadingTemplate;
+			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) {
+				$gridConfig->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$gridConfig->grid->panelHeadingTemplate;
+			}
 		} else {
 			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout;
 		}
