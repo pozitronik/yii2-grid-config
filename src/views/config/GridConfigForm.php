@@ -25,7 +25,8 @@ GridConfigAssets::register($this);
 		<?= $form->field($model, 'pageSize')->textInput([
 			'type' => 'number',
 			'disabled' => null === $model->pageSize,
-			'max' => $model->maxPageSize
+			'max' => $model->maxPageSize,
+			'min' => 0
 		]) ?>
 		<?= $form->field($model, 'visibleColumnsJson')->hiddenInput(['id' => 'visibleColumnsJson'])->label(false) ?>
 
