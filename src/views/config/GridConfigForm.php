@@ -91,7 +91,7 @@ GridConfigAssets::register($this);
 				'tristate' => false,
 				'pluginOptions' => [
 					'size' => 'mini',
-					'onText' => '<i class="glyphicon glyphicon-check"></i>',
+					'onText' => '<i class="fa fa-check"></i>',
 					'offText' => null
 				],
 			]) ?>
