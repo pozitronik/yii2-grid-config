@@ -19,7 +19,7 @@
 	"require": {
 		"php": ">=7.4",
 		"pozitronik/yii2-users-options": "dev-master",
-		"pozitronik/yii2-core-tools": "dev-master",
+		"pozitronik/yii2-traits": "dev-master",
 		"kartik-v/yii2-sortable": "dev-master",
 		"kartik-v/yii2-widget-switchinput": "dev-master"
 	},
