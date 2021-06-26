@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\grid_config;
 
-use pozitronik\traits\ModuleTrait;
+use pozitronik\traits\traits\ModuleTrait;
 use yii\base\Module;
 
 /**
