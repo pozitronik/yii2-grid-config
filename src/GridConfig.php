@@ -72,7 +72,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function attributeLabels():array {
 		return [
-            'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
+			'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
 			'floatHeader' => 'Плавающий заголовок'
 		];
