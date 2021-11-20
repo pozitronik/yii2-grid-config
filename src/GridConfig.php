@@ -15,6 +15,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\ViewContextInterface;
+use yii\grid\ActionColumn;
 use yii\grid\Column;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
@@ -191,13 +192,16 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			if (is_object($column)) {
 				$columnModel = $column;
 			} elseif (is_array($column)) {
-				/** @var DataColumn $columnModel */
 				$columnModel = Yii::createObject(array_merge([//конфигурируем модель колонки. Это может быть любой потомок класса Column, в котором есть своя реализация получения лейбла
 					'class' => ArrayHelper::getValue($column, 'class', DataColumn::class),
 					'grid' => $this->grid//из переданного имени класса грида генерируем модель этого грида - она нужна модели колонки
 				], $column));
 			} else {
 				throw new InvalidConfigException('Конфигурация колонок грида задана неверно');
+			}
+			if (is_a($columnModel, ActionColumn::class)) {
+				/** @var ActionColumn $columnModel */
+				return $columnModel->header;//возвращаем заголовок для ActionColumn
 			}
 			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel, мы рефлексией хачим его доступность
 			return (empty($label = $getHeaderCellLabelReflectionMethod->invoke($columnModel)) || '&nbsp;' === $label)?null:$label;//вызываем похаченный метод. Если имя колонки пустое, нужно вернуть null - вышестоящий метод подставит туда числовой идентификатор
