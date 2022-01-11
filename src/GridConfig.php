@@ -110,7 +110,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @param array $config
 	 * @return string
 	 * @throws Throwable
-	 * @noinspection PhpPossiblePolymorphicInvocationInspection -- мы можем обращаться к свойствам грида картика, если используется он, но опираемся на базовый грид
 	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public static function widget(array $config = []):string {
@@ -431,7 +430,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 
 	/**
 	 * @param bool|null $floatHeader
-	 * @noinspection PhpPossiblePolymorphicInvocationInspection -- учитываем, что тут может быть и картик и не картик
 	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public function setFloatHeader(?bool $floatHeader):void {
