@@ -28,7 +28,8 @@
 		"yiisoft/yii2-bootstrap4": "for yii2-grid-config to work with Bootstrap 4.x version"
 	},
 	"require-dev": {
-		"yiisoft/yii2": "dev-master"
+		"yiisoft/yii2": "dev-master",
+		"yiisoft/yii2-bootstrap4": "~2.0.10"
 	},
 	"autoload": {
 		"psr-4": {
