@@ -48,25 +48,22 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private const DEFAULT_SAVE_URL = 'config/apply';
 	public $user_id;
 
-	private $_id = '';
-	private $_columns;
-	private $_fromUrl;
-	private $_grid;
-	private $_gridPresent = false;
-	private $_saveUrl;
-	private $_visibleColumnsJson = '';
+	private ?string $_id;
+	private ?array $_columns;
+	private ?string $_fromUrl;
+	private ?GridView $_grid;
+	private bool $_gridPresent = false;
+	private ?string $_saveUrl;
+	private string $_visibleColumnsJson = '';
+	private ?int $_pageSize;
+	private ?int $_maxPageSize = 20;
 	/**
-	 * @var int|null
+	 * @var string[]|null
 	 */
-	private $_pageSize;
-	private $_maxPageSize = 20;
-	private $_visibleColumnsLabels;
-	private $_floatHeader;
+	private ?array $_visibleColumnsLabels;
+	private ?bool $_floatHeader;
 
-	/**
-	 * @var null|UsersOptions
-	 */
-	private $_userOptions;
+	private ?UsersOptions $_userOptions;
 
 	/**
 	 * {@inheritDoc}
@@ -184,11 +181,11 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 
 	/**
 	 * Метод, пытающийся из параметров колонки выудить такое же название, какое будет отображать грид
-	 * @param array|object $column -- может быть конфиг массивом (тогда надо прогрузить), может быть уже готовая модель (если конфигуратор работает с гридом напрямую)
+	 * @param object|array $column -- может быть конфиг массивом (тогда надо прогрузить), может быть уже готовая модель (если конфигуратор работает с гридом напрямую)
 	 * @return string|null
 	 * @throws Throwable
 	 */
-	private function getColumnLabel($column):?string {
+	private function getColumnLabel(object|array $column):?string {
 		try {
 			if (is_object($column)) {
 				$columnModel = $column;
