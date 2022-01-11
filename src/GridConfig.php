@@ -204,7 +204,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			}
 			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel, мы рефлексией хачим его доступность
 			return (empty($label = $getHeaderCellLabelReflectionMethod->invoke($columnModel)) || '&nbsp;' === $label)?null:$label;//вызываем похаченный метод. Если имя колонки пустое, нужно вернуть null - вышестоящий метод подставит туда числовой идентификатор
-		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable $throw) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
+		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
 			return null;
 		}
 	}
