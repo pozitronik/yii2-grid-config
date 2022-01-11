@@ -23,24 +23,24 @@ use yii\helpers\Html;
 use yii\web\JsExpression;
 
 /**
- * @property string $id -- используется для сохранения конфига, это ключ
- * @property string $saveUrl -- урл для постинга сохраняемого конфига
- * @property null|int $pageSize
- * @property null|int $maxPageSize -- максимальный лимит для задаваемого размера страницы
- * @property null|bool $floatHeader -- плавающий заголовок (если поддерживается)
- * @property null|string $fromUrl -- redirection url
- * @property GridView $grid -- конфигурируемый грид
- * @property array[] $columns -- все доступные колонки грида
- * @property array[] $visibleColumns -- все отображаемые колонки грида (с сохранением порядка сортировки)
- * @property string[]|null $visibleColumnsLabels -- сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
+ * @property string $id Используется для сохранения конфига, это ключ
+ * @property string $saveUrl Урл для постинга сохраняемого конфига
+ * @property null|int $pageSize Размер страницы пагинатора
+ * @property null|int $maxPageSize Максимальный лимит для задаваемого размера страницы
+ * @property null|bool $floatHeader Плавающий заголовок (если поддерживается связанным GridView)
+ * @property null|string $fromUrl Redirection url
+ * @property GridView $grid Конфигурируемый грид
+ * @property array[] $columns Все доступные колонки грида
+ * @property array[] $visibleColumns Все отображаемые колонки грида (с сохранением порядка сортировки)
+ * @property string[]|null $visibleColumnsLabels Сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
  *
- * @property-read string[] $visibleColumnsItems -- набор строк заголовков для Sortable видимых колонок
- * @property-read string[] $hiddenColumnsItems -- набор строк заголовков для Sortable скрытых колонок
+ * @property-read string[] $visibleColumnsItems Набор строк заголовков для Sortable видимых колонок
+ * @property-read string[] $hiddenColumnsItems Набор строк заголовков для Sortable скрытых колонок
  *
- * @property-read string $viewPath
- * @property string $visibleColumnsJson -- виртуальный атрибут для передачи сериализованного набора данных из Sortable-виджета (https://github.com/lukasoppermann/html5sortable)
+ * @property-read string $viewPath Путь к шаблонам компонента
+ * @property string $visibleColumnsJson Виртуальный атрибут для передачи сериализованного набора данных из Sortable-виджета (https://github.com/lukasoppermann/html5sortable)
  *
- * @property null|int $user_id -- id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
+ * @property null|int $user_id id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
  */
 class GridConfig extends Model implements ViewContextInterface, BootstrapInterface {
 	use BootstrapTrait;
