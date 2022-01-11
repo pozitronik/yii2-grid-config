@@ -306,9 +306,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		if ($this->grid->id === $gridClassName::$autoIdPrefix.($gridClassName::$counter - 1)) {//ебать я хакир
 			if (null === $this->_id) {
 				throw new InvalidConfigException('Нужно задать параметр id для конфигурируемого GridView, либо для GridConfig');
-			} else {
-				$this->grid->id = $this->_id;
 			}
+			$this->grid->id = $this->_id;
 
 		}
 		return $this->grid->id;
