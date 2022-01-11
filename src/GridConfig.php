@@ -139,7 +139,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function endGrid():string {
 		$this->grid::end();
-		$bsView = $this->isBs4()?"bs4":"bs3";
+		$bsView = $this->isBs(4)?"bs4":"bs3";
 		return Yii::$app->view->render("config/{$bsView}/modalGridConfig", ['model' => $this], $this);
 	}
 
@@ -177,7 +177,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @throws Throwable
 	 */
 	public function renderOptionsButton():string {
-		return Html::button($this->isBs4()?'<i class="fas fa-wrench"></i>':'<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
+		return Html::button($this->isBs(4)
+			?'<i class="fas fa-wrench"></i>'
+			:'<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
 	}
 
 	/**
