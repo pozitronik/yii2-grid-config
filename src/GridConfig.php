@@ -48,22 +48,22 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private const DEFAULT_SAVE_URL = 'config/apply';
 	public $user_id;
 
-	private ?string $_id;
-	private ?array $_columns;
-	private ?string $_fromUrl;
-	private ?GridView $_grid;
+	private ?string $_id = null;
+	private ?array $_columns = null;
+	private ?string $_fromUrl = null;
+	private ?GridView $_grid = null;
 	private bool $_gridPresent = false;
-	private ?string $_saveUrl;
+	private ?string $_saveUrl = null;
 	private string $_visibleColumnsJson = '';
-	private ?int $_pageSize;
+	private ?int $_pageSize = null;
 	private ?int $_maxPageSize = 20;
 	/**
 	 * @var string[]|null
 	 */
-	private ?array $_visibleColumnsLabels;
-	private ?bool $_floatHeader;
+	private ?array $_visibleColumnsLabels = null;
+	private ?bool $_floatHeader = null;
 
-	private ?UsersOptions $_userOptions;
+	private ?UsersOptions $_userOptions = null;
 
 	/**
 	 * {@inheritDoc}
