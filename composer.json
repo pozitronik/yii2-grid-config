@@ -18,8 +18,8 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=8.0",
-		"pozitronik/yii2-users-options": "dev-dev",
-		"pozitronik/yii2-traits": "dev-dev",
+		"pozitronik/yii2-users-options": "dev-master",
+		"pozitronik/yii2-traits": "dev-master",
 		"kartik-v/yii2-sortable": "dev-master",
 		"kartik-v/yii2-widget-switchinput": "dev-master"
 	},
