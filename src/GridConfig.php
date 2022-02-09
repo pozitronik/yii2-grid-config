@@ -97,8 +97,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
-		$attributes = $this->_userOptions->get($this->formName().$this->id);
-		$this->load($attributes, '');
+		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
 	}
 
