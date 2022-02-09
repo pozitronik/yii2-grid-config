@@ -295,7 +295,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function getId():string {
 		if (!$this->_gridPresent) {
-			throw new InvalidConfigException('Нужно указать привязку к GridView перед использованием');
+			return $this->_id??throw new InvalidConfigException('Нужно указать id, либо указать привязку к GridView.');
 		}
 		/** @var object $gridClassName */
 		$gridClassName = (new ReflectionClass($this->grid))->getName();
