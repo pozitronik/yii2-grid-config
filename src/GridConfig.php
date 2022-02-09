@@ -291,10 +291,10 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 * @throws InvalidConfigException
 	 */
-	public function getId():string {
+	public function getId():?string {
 		if (!$this->_gridPresent) {
 			return $this->_id;
 		}
