@@ -154,6 +154,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
+	 * Получает уникальное имя колонки для привязки настроек
 	 * @throws Throwable
 	 */
 	private function nameColumns():void {
@@ -161,6 +162,18 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$columnCount = 0;//нам важны только цифры колонок
 		foreach ($this->columns as $column) {
 			if (null === $label = $this->getColumnLabel($column)) $label = "Column #$columnCount";
+			$checkLabel = $label;
+			$columnCopy = 0;
+			while (isset($namedColumns[$checkLabel])) {
+				/**
+				 * В случае, если в гриде имеется несколько разных колонок с одинаковым label, к генерируемому имени добавляем привязанный атрибут и порядковый
+				 * номер "дубля". Брать название атрибута сразу нельзя (неудобно и несовместимо со старыми версиями), использовать решение вроде spl_object_hash
+				 * для получения уникального идентификатора, тоже нельзя - конфиги будут слетать при любом изменении конфигурации.
+				 **/
+				$checkLabel = $label.' ('.$this->getColumnAttribute($column).'_'.$columnCopy.')';
+				$columnCopy++;
+			}
+			$label = $checkLabel;
 			$namedColumns[$label] = $column;
 			$columnCount++;
 		}
@@ -179,29 +192,57 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
+	 * @param object|array $column
+	 * @return Column
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function getColumn(object|array $column):Column {
+		if (is_object($column)) {
+			return $column;
+		}
+		if (is_array($column)) {
+			return Yii::createObject(array_merge([//конфигурируем модель колонки. Это может быть любой потомок класса Column, в котором есть своя реализация получения лейбла
+				'class' => ArrayHelper::getValue($column, 'class', DataColumn::class),
+				'grid' => $this->grid//из переданного имени класса грида генерируем модель этого грида - она нужна модели колонки
+			], $column));
+		}
+		throw new InvalidConfigException('Конфигурация колонок грида задана неверно');
+	}
+
+	/**
 	 * Метод, пытающийся из параметров колонки выудить такое же название, какое будет отображать грид
-	 * @param object|array $column -- может быть конфиг массивом (тогда надо прогрузить), может быть уже готовая модель (если конфигуратор работает с гридом напрямую)
+	 * @param object|array $column
 	 * @return string|null
 	 * @throws Throwable
 	 */
 	private function getColumnLabel(object|array $column):?string {
 		try {
-			if (is_object($column)) {
-				$columnModel = $column;
-			} elseif (is_array($column)) {
-				$columnModel = Yii::createObject(array_merge([//конфигурируем модель колонки. Это может быть любой потомок класса Column, в котором есть своя реализация получения лейбла
-					'class' => ArrayHelper::getValue($column, 'class', DataColumn::class),
-					'grid' => $this->grid//из переданного имени класса грида генерируем модель этого грида - она нужна модели колонки
-				], $column));
-			} else {
-				throw new InvalidConfigException('Конфигурация колонок грида задана неверно');
-			}
+			$columnModel = $this->getColumn($column);
 			if (is_a($columnModel, ActionColumn::class)) {
 				/** @var ActionColumn $columnModel */
 				return $columnModel->header;//возвращаем заголовок для ActionColumn
 			}
 			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel, мы рефлексией хачим его доступность
 			return (empty($label = $getHeaderCellLabelReflectionMethod->invoke($columnModel)) || '&nbsp;' === $label)?null:$label;//вызываем похаченный метод. Если имя колонки пустое, нужно вернуть null - вышестоящий метод подставит туда числовой идентификатор
+		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
+			return null;
+		}
+	}
+
+	/**
+	 * Метод, возвращающий атрибут, с которым связана колонка, если есть
+	 * @param object|array $column
+	 * @return string|null
+	 */
+	private function getColumnAttribute(object|array $column):?string {
+		try {
+			$columnModel = $this->getColumn($column);
+			if (is_a($columnModel, ActionColumn::class)) {
+				return null;//У ActionColumn нет атрибута
+			}
+			/** @var DataColumn $column */
+			return $column->attribute;
 		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
 			return null;
 		}
