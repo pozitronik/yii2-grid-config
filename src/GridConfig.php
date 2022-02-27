@@ -420,7 +420,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @param string[] $visibleColumnsLabels
 	 */
 	public function setVisibleColumnsLabels(?array $visibleColumnsLabels):void {
-		$this->_visibleColumnsLabels = $visibleColumnsLabels;
+		$this->_visibleColumnsLabels = array_map(static fn($label):string => trim($label, '.'), $visibleColumnsLabels);
 	}
 
 	/**
