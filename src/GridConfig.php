@@ -75,7 +75,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
 			'floatHeader' => 'Плавающий заголовок',
-			'filterOnFocusOut' => 'Фильтровать при изменении фильтра'
+			'filterOnFocusOut' => 'Фильтровать при изменении фильтров'
 		];
 	}
 
