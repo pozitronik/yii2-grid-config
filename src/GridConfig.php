@@ -28,6 +28,7 @@ use yii\web\JsExpression;
  * @property null|int $pageSize Размер страницы пагинатора
  * @property null|int $maxPageSize Максимальный лимит для задаваемого размера страницы
  * @property null|bool $floatHeader Плавающий заголовок (если поддерживается связанным GridView)
+ * @property null|bool $filterOnFocusOut Фильтрация при потере фокуса любым фильтром
  * @property null|string $fromUrl Redirection url
  * @property GridView $grid Конфигурируемый грид
  * @property array[] $columns Все доступные колонки грида
@@ -62,6 +63,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	private ?array $_visibleColumnsLabels = null;
 	private ?bool $_floatHeader = null;
+	private ?bool $_filterOnFocusOut = null;
 
 	private ?UsersOptions $_userOptions = null;
 
@@ -72,7 +74,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		return [
 			'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
-			'floatHeader' => 'Плавающий заголовок'
+			'floatHeader' => 'Плавающий заголовок',
+			'filterOnFocusOut' => 'Фильтровать при изменении фильтра'
 		];
 	}
 
@@ -85,7 +88,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			[['pageSize'], 'integer'],
 			[['pageSize'], 'filter', 'filter' => 'intval'],
 			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson'], 'safe'],
-			[['floatHeader'], 'boolean']
+			[['floatHeader', 'filterOnFocusOut'], 'boolean']
 		];
 	}
 
@@ -472,8 +475,25 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function setFloatHeader(?bool $floatHeader):void {
 		$this->_floatHeader = $floatHeader;
-		if ($this->_gridPresent && false !== $this->grid->hasProperty('floatHeader')) {
+		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader')) {
 			$this->grid->floatHeader = $this->_floatHeader;
+		}
+	}
+
+	/**
+	 * @return bool|null
+	 */
+	public function getFilterOnFocusOut():?bool {
+		return $this->_filterOnFocusOut;
+	}
+
+	/**
+	 * @param bool|null $filterOnFocusOut
+	 */
+	public function setFilterOnFocusOut(?bool $filterOnFocusOut):void {
+		$this->_filterOnFocusOut = $filterOnFocusOut;
+		if ($this->_gridPresent && null !== $this->_filterOnFocusOut) {
+			$this->grid->filterOnFocusOut = $this->_filterOnFocusOut;
 		}
 	}
 

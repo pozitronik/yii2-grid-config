@@ -85,8 +85,8 @@ GridConfigAssets::register($this);
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-6">
-		<?php if ($model->grid->hasProperty('floatHeader')): ?>
+	<?php if ($model->grid->hasProperty('floatHeader')): ?>
+		<div class="col-md-6">
 			<?= $form->field($model, 'floatHeader')->widget(SwitchInput::class, [
 				'tristate' => false,
 				'pluginOptions' => [
@@ -95,7 +95,17 @@ GridConfigAssets::register($this);
 					'offText' => null
 				],
 			]) ?>
-		<?php endif; ?>
+		</div>
+	<?php endif; ?>
+	<div class="col-md-6">
+		<?= $form->field($model, 'filterOnFocusOut')->widget(SwitchInput::class, [
+			'tristate' => false,
+			'pluginOptions' => [
+				'size' => 'mini',
+				'onText' => '<i class="fa fa-check"></i>',
+				'offText' => null
+			],
+		]) ?>
 	</div>
 </div>
 <?php ActiveForm::end(); ?>
