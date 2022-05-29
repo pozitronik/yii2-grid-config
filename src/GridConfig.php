@@ -123,13 +123,13 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			/*Добавим кнопку вызова модалки настроек*/
 			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
 			/*Добавим виджет фильтров, без принудительного добавления*/
-			$gridConfig->grid->replaceTags['{filters}'] = $gridConfig->renderFiltersWidget();
+			$gridConfig->grid->replaceTags['{filters}'] = $gridConfig->renderFiltersWidget($gridConfig->grid);
 			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
 			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) {
 				$gridConfig->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$gridConfig->grid->panelHeadingTemplate;
 			}
 		} else {
-			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout.$gridConfig->renderFiltersWidget();
+			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout.$gridConfig->renderFiltersWidget($gridConfig->grid);
 		}
 
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
@@ -202,8 +202,14 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @return string
 	 * @throws Throwable
 	 */
-	public function renderFiltersWidget():string {
-		return FiltersWidget::widget();
+	public function renderFiltersWidget(GridView $grid):string {
+		return FiltersWidget::widget([
+			'filters' => [
+				'filter one',
+				'filter two'
+			],
+			'grid' => $grid
+		]);
 	}
 
 	/**
