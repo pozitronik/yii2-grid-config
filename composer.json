@@ -21,7 +21,8 @@
 		"pozitronik/yii2-users-options": "^2.0.0",
 		"pozitronik/yii2-traits": "^1.0.0",
 		"kartik-v/yii2-sortable": "dev-master",
-		"kartik-v/yii2-widget-switchinput": "dev-master"
+		"kartik-v/yii2-widget-switchinput": "dev-master",
+		"kartik-v/yii2-widget-select2": "dev-master"
 	},
 	"suggest": {
 		"yiisoft/yii2-bootstrap": "for yii2-grid-config extensions to work with Bootstrap 3.x version",
