@@ -30,7 +30,7 @@ $id = "{$modelName}-index-grid";
 	'panel' => [
 		'heading' => false,
 	],
-	'panelBeforeTemplate' => '{optionsBtn}{newRecord}{toolbarContainer}{before}<div class="clearfix"></div>',
+	'panelBeforeTemplate' => '{filters}{options}{newRecord}{toolbarContainer}{before}<div class="clearfix"></div>',
 	'summary' => null,
 	'showOnEmpty' => true,
 	'export' => false,

@@ -5,6 +5,7 @@ namespace pozitronik\grid_config;
 
 use kartik\base\BootstrapInterface;
 use kartik\base\BootstrapTrait;
+use pozitronik\grid_config\widgets\filters\FiltersWidget;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\BootstrapHelper;
 use pozitronik\helpers\ReflectionHelper;
@@ -121,12 +122,14 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		if ($gridConfig->grid->hasProperty('replaceTags')) {
 			/*Добавим кнопку вызова модалки настроек*/
 			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
+			/*Добавим виджет фильтров, без принудительного добавления*/
+			$gridConfig->grid->replaceTags['{filters}'] = $gridConfig->renderFiltersWidget();
 			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
 			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) {
 				$gridConfig->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$gridConfig->grid->panelHeadingTemplate;
 			}
 		} else {
-			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout;
+			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout.$gridConfig->renderFiltersWidget();
 		}
 
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
@@ -192,6 +195,15 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		return Html::button($this->isBs(4)
 			?'<i class="fas fa-wrench"></i>'
 			:'<i class="glyphicon glyphicon-wrench"></i>', ['class' => 'btn btn-default', 'onclick' => new JsExpression("jQuery('#grid-config-modal-{$this->id}').modal('show')")]);
+	}
+
+	/**
+	 * Виджет выбора фильтров
+	 * @return string
+	 * @throws Throwable
+	 */
+	public function renderFiltersWidget():string {
+		return FiltersWidget::widget();
 	}
 
 	/**
