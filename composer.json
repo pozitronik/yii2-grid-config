@@ -15,7 +15,7 @@
 			"email": "antikillerxxl@gmail.com"
 		}
 	],
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"require": {
 		"php": ">=8.0",
 		"pozitronik/yii2-users-options": "^2.0.0",
