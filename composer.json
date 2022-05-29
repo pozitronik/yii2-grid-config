@@ -31,6 +31,7 @@
 		"yiisoft/yii2": "dev-master",
 		"yiisoft/yii2-bootstrap4": "~2.0.10",
 		"yiisoft/yii2-bootstrap": "dev-master",
+		"kartik-v/yii2-grid": "dev-master",
 		"phpunit/phpunit": "^9.5",
 		"codeception/codeception": "^4.1",
 		"codeception/module-asserts": "^1.3",
