@@ -29,6 +29,7 @@ use yii\web\JsExpression;
  * @property null|int $maxPageSize Максимальный лимит для задаваемого размера страницы
  * @property null|bool $floatHeader Плавающий заголовок (если поддерживается связанным GridView)
  * @property null|bool $filterOnFocusOut Фильтрация при потере фокуса любым фильтром
+ *
  * @property null|string $fromUrl Redirection url
  * @property GridView $grid Конфигурируемый грид
  * @property array[] $columns Все доступные колонки грида
@@ -58,6 +59,10 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private string $_visibleColumnsJson = '';
 	private ?int $_pageSize = null;
 	private ?int $_maxPageSize = 20;
+	/**
+	 * @var bool|null Перекрывает стили kartik-v/yii2-grid для "плавающих" элементов, настраивается только через конфиг.
+	 */
+	private bool $_fixKartikFloatStyles = false;
 	/**
 	 * @var string[]|null
 	 */
@@ -99,7 +104,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		parent::init();
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
-		$this->_saveUrl = $this->_saveUrl??ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
+		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
+		$this->_fixKartikFloatStyles = $this->_saveUrl??GridConfigModule::param('fixKartikFloatStyles', $this->_fixKartikFloatStyles);
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
 	}
@@ -477,6 +483,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_floatHeader = $floatHeader;
 		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader')) {
 			$this->grid->floatHeader = $this->_floatHeader;
+			if (true === $this->_fixKartikFloatStyles) {
+				FixKartikAssets::register($this->grid->getView());
+			}
 		}
 	}
 
