@@ -59,10 +59,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private string $_visibleColumnsJson = '';
 	private ?int $_pageSize = null;
 	private ?int $_maxPageSize = 20;
-	/**
-	 * @var bool|null Перекрывает стили kartik-v/yii2-grid для "плавающих" элементов, настраивается только через конфиг.
-	 */
-	private bool $_fixKartikFloatStyles = false;
 	private array $_defaultGridParams = [];
 
 	/**
@@ -107,7 +103,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
-		$this->_fixKartikFloatStyles = GridConfigModule::param('fixKartikFloatStyles', $this->_fixKartikFloatStyles);
 		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
 		$this->_defaultGridParams = GridConfigModule::param('defaultGridParams', $this->_defaultGridParams);
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
@@ -491,9 +486,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_floatHeader = $floatHeader;
 		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader')) {
 			$this->grid->floatHeader = $this->_floatHeader;
-			if (true === $this->_fixKartikFloatStyles) {
-				FixKartikAssets::register($this->grid->getView());
-			}
 		}
 	}
 
