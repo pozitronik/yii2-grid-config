@@ -97,13 +97,16 @@ GridConfig::widget([
 ]
 ```
 
-При необходимости, в параметрах модуля можно задать ключ saveUrl, отвечающий за адрес постинга применяемых настроек (например, если вы решили переопределить контроллер модуля своим):
+Другие настройки модуля:
 
 ```php
-'gridconfig' => [
-    'class' => GridConfigModule::class,
-    'params' => [
-        'saveUrl' => '/my-controller-id/my-save-action'    
+'modules' => [
+    'gridconfig' => [
+        'class' => GridConfigModule::class,
+        'params' => [
+            'saveUrl' => '/my-controller-id/my-save-action', /* Адрес постинга применяемых настроек (например, если вы решили переопределить контроллер модуля своим) */
+            'fixKartikFloatStyles' => false, /* Заменяет для всех «плавающих» элементов в kartik-v/yii2-grid стиль position: sticky; на position:fixed */
+        ]
     ]
 ]
 ```
