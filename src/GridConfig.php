@@ -106,6 +106,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
 		$this->_fixKartikFloatStyles = GridConfigModule::param('fixKartikFloatStyles', $this->_fixKartikFloatStyles);
+		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
 	}
