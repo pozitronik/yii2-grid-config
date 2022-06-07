@@ -63,6 +63,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @var bool|null Перекрывает стили kartik-v/yii2-grid для "плавающих" элементов, настраивается только через конфиг.
 	 */
 	private bool $_fixKartikFloatStyles = false;
+	private array $_defaultGridParams = [];
+
 	/**
 	 * @var string[]|null
 	 */
@@ -107,6 +109,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
 		$this->_fixKartikFloatStyles = GridConfigModule::param('fixKartikFloatStyles', $this->_fixKartikFloatStyles);
 		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
+		$this->_defaultGridParams = GridConfigModule::param('defaultGridParams', $this->_defaultGridParams);
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
 	}
@@ -137,6 +140,10 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		}
 
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
+		foreach ($gridConfig->_defaultGridParams as $gridParamName => $gridParamValue) {
+			$gridConfig->grid->$gridParamName = $gridParamValue;
+		}
+
 		return $gridConfig->endGrid();
 	}
 
