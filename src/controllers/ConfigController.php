@@ -28,4 +28,19 @@ class ConfigController extends Controller {
 		$config->apply();
 		return ($config->fromUrl)?$this->redirect($config->fromUrl):ArrayHelper::getValue(Yii::$app->modules, 'gridсonfig.params.defaultRedirect', Url::home());
 	}
+
+	/**
+	 * Список сохранённых фильтров
+	 */
+	public function actionFiltersList() {
+		$config = new GridConfig();
+
+	}
+
+	/**
+	 * Сохранение фильтра
+	 */
+	public function actionFiltersSave() {
+
+	}
 }
