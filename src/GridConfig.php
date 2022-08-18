@@ -35,7 +35,7 @@ use yii\web\JsExpression;
  * @property array[] $columns Все доступные колонки грида
  * @property array[] $visibleColumns Все отображаемые колонки грида (с сохранением порядка сортировки)
  * @property string[]|null $visibleColumnsLabels Сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
- * @property string[]|null $defaultColumns Колонки (в формате ['columnLabel'...], которые должны выводиться по умолчанию (если свой набор не сконфигурирован)
+ * @property string[]|null $defaultAttributes Колонки (в формате ['attributeName'...], которые должны выводиться по умолчанию (если свой набор не сконфигурирован)
  *
  * @property-read string[] $visibleColumnsItems Набор строк заголовков для Sortable видимых колонок
  * @property-read string[] $hiddenColumnsItems Набор строк заголовков для Sortable скрытых колонок
@@ -68,7 +68,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private ?array $_visibleColumnsLabels = null;
 	private ?bool $_floatHeader = null;
 	private ?bool $_filterOnFocusOut = null;
-	private ?array $_defaultColumns = null;
+	private ?array $_defaultAttributes = null;
 
 	private ?UsersOptions $_userOptions = null;
 
@@ -117,7 +117,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @param array $config
 	 * @return string
 	 * @throws Throwable
-	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public static function widget(array $config = []):string {
 		$gridConfig = new self($config);
@@ -136,6 +135,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @return void
 	 * @throws InvalidConfigException
 	 * @throws Throwable
+	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	private function injectOptionsButton():void {
 		if ($this->grid->hasProperty('replaceTags')) {
@@ -243,7 +243,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 				/** @var ActionColumn $columnModel */
 				return $columnModel->header;//возвращаем заголовок для ActionColumn
 			}
-			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel, мы рефлексией хачим его доступность
+			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel приватный, мы рефлексией хачим его доступность
 			return (empty($label = $getHeaderCellLabelReflectionMethod->invoke($columnModel)) || '&nbsp;' === $label)?null:$label;//вызываем похаченный метод. Если имя колонки пустое, нужно вернуть null - вышестоящий метод подставит туда числовой идентификатор
 		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
 			return null;
@@ -269,11 +269,30 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
+	 * @return array|null
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function getDefaultAttributesLabels():?array {
+		if (null === $this->_defaultAttributes) return null;
+		$result = [];
+		foreach ($this->columns as $column) {
+			$columnObject = $this->getColumn($column);
+			if ((null !== $columnAttribute = $this->getColumnAttribute($columnObject)) && $columnAttribute === $column) {
+				$result[] = $this->getColumnLabel($columnObject);
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * @return Column[]
 	 * @throws Throwable
 	 */
 	public function getVisibleColumns():array {
-		if (null === $this->visibleColumnsLabels) $this->visibleColumnsLabels = $this->defaultColumns??array_keys($this->columns);//при несозданном конфиге отобразим все колонки
+		if (null === $this->visibleColumnsLabels) {
+			$this->visibleColumnsLabels = $this->getDefaultAttributesLabels()??array_keys($this->columns);
+		}
 //		if ([] === $this->visibleColumnsLabels) return [new DataColumn(['label' => 'Нет отображаемых колонок', 'grid' => $this->grid])];
 		$result = [];
 		foreach ($this->visibleColumnsLabels as $columnsLabel) {
@@ -517,15 +536,15 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	/**
 	 * @return string[]|null
 	 */
-	public function getDefaultColumns():?array {
-		return $this->_defaultColumns;
+	public function getDefaultAttributes():?array {
+		return $this->_defaultAttributes;
 	}
 
 	/**
-	 * @param string[]|null $defaultColumns
+	 * @param string[]|null $defaultAttributes
 	 */
-	public function setDefaultColumns(?array $defaultColumns):void {
-		$this->_defaultColumns = $defaultColumns;
+	public function setDefaultAttributes(?array $defaultAttributes):void {
+		$this->_defaultAttributes = $defaultAttributes;
 	}
 
 }
