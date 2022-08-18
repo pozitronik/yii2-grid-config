@@ -35,6 +35,7 @@ use yii\web\JsExpression;
  * @property array[] $columns Все доступные колонки грида
  * @property array[] $visibleColumns Все отображаемые колонки грида (с сохранением порядка сортировки)
  * @property string[]|null $visibleColumnsLabels Сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
+ * @property string[]|null $defaultAttributes Колонки (в формате ['attributeName'...], которые должны выводиться по умолчанию (если свой набор не сконфигурирован)
  *
  * @property-read string[] $visibleColumnsItems Набор строк заголовков для Sortable видимых колонок
  * @property-read string[] $hiddenColumnsItems Набор строк заголовков для Sortable скрытых колонок
@@ -67,6 +68,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private ?array $_visibleColumnsLabels = null;
 	private ?bool $_floatHeader = null;
 	private ?bool $_filterOnFocusOut = null;
+	private ?array $_defaultAttributes = null;
 
 	private ?UsersOptions $_userOptions = null;
 
@@ -78,7 +80,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
 			'floatHeader' => 'Плавающий заголовок',
-			'filterOnFocusOut' => 'Фильтровать при изменении фильтров'
+			'filterOnFocusOut' => 'Фильтровать при изменении фильтров',
+			'defaultColumns' => 'Поля по умолчанию'
 		];
 	}
 
@@ -90,7 +93,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			[['id', 'fromUrl'], 'string'],
 			[['pageSize'], 'integer'],
 			[['pageSize'], 'filter', 'filter' => 'intval'],
-			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson'], 'safe'],
+			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson', 'defaultColumns'], 'safe'],
 			[['floatHeader', 'filterOnFocusOut'], 'boolean']
 		];
 	}
@@ -114,32 +117,37 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @param array $config
 	 * @return string
 	 * @throws Throwable
-	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	public static function widget(array $config = []):string {
 		$gridConfig = new self($config);
-
-		/**
-		 * Если мы используем GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
-		 * Иначе просто модифицируем лайаут
-		 */
-		if ($gridConfig->grid->hasProperty('replaceTags')) {
-			/*Добавим кнопку вызова модалки настроек*/
-			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
-			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
-			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) {
-				$gridConfig->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$gridConfig->grid->panelHeadingTemplate;
-			}
-		} else {
-			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout;
-		}
-
+		$gridConfig->injectOptionsButton();
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
 		foreach ($gridConfig->_defaultGridParams as $gridParamName => $gridParamValue) {
 			$gridConfig->grid->$gridParamName = $gridParamValue;
 		}
 
 		return $gridConfig->endGrid();
+	}
+
+	/**
+	 * Если используется GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
+	 * Иначе просто модифицируем лайаут
+	 * @return void
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 * @noinspection PhpUndefinedFieldInspection
+	 */
+	private function injectOptionsButton():void {
+		if ($this->grid->hasProperty('replaceTags')) {
+			/*Добавим кнопку вызова модалки настроек*/
+			$this->grid->replaceTags['{options}'] = $this->renderOptionsButton();
+			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
+			if (0 === mb_substr_count($this->grid->panelHeadingTemplate, '{options}')) {
+				$this->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$this->grid->panelHeadingTemplate;
+			}
+		} else {
+			$this->grid->layout = $this->renderOptionsButton().$this->grid->layout;
+		}
 	}
 
 	/**
@@ -235,7 +243,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 				/** @var ActionColumn $columnModel */
 				return $columnModel->header;//возвращаем заголовок для ActionColumn
 			}
-			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel, мы рефлексией хачим его доступность
+			if (null === $getHeaderCellLabelReflectionMethod = ReflectionHelper::setAccessible($columnModel, 'getHeaderCellLabel')) return null;//поскольку метод getHeaderCellLabel приватный, мы рефлексией хачим его доступность
 			return (empty($label = $getHeaderCellLabelReflectionMethod->invoke($columnModel)) || '&nbsp;' === $label)?null:$label;//вызываем похаченный метод. Если имя колонки пустое, нужно вернуть null - вышестоящий метод подставит туда числовой идентификатор
 		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable) {//если на каком-то этапе возникла ошибка, нужно фаллбечить
 			return null;
@@ -261,11 +269,40 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
+	 * @return array|null
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function getDefaultAttributesLabels():?array {
+		if (null === $this->_defaultAttributes) return null;
+		return array_intersect_key($this->getColumnsLabels(), array_flip($this->_defaultAttributes));
+	}
+
+	/**
+	 * Returns an array of all attributes labels in ['attribute' => 'label'] format
+	 * @return string[]
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function getColumnsLabels():array {
+		$result = [];
+		foreach ($this->columns as $column) {
+			$columnObject = $this->getColumn($column);
+			if ((null !== $columnAttribute = $this->getColumnAttribute($columnObject))) {
+				$result[$columnAttribute] = $this->getColumnLabel($columnObject);
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * @return Column[]
 	 * @throws Throwable
 	 */
 	public function getVisibleColumns():array {
-		if (null === $this->visibleColumnsLabels) $this->visibleColumnsLabels = array_keys($this->columns);//при несозданном конфиге отобразим все колонки
+		if (null === $this->visibleColumnsLabels) {
+			$this->visibleColumnsLabels = $this->getDefaultAttributesLabels()??array_keys($this->columns);
+		}
 //		if ([] === $this->visibleColumnsLabels) return [new DataColumn(['label' => 'Нет отображаемых колонок', 'grid' => $this->grid])];
 		$result = [];
 		foreach ($this->visibleColumnsLabels as $columnsLabel) {
@@ -352,7 +389,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		}
 		/** @var object $gridClassName */
 		$gridClassName = (new ReflectionClass($this->grid))->getName();
-		if ($this->grid->id === $gridClassName::$autoIdPrefix.($gridClassName::$counter - 1)) {//ебать я хакир
+		if ($this->grid->id === $gridClassName::$autoIdPrefix.($gridClassName::$counter - 1)) {//ima fukkin haxxor
 			if (null === $this->_id) {
 				throw new InvalidConfigException('Нужно задать параметр id для конфигурируемого GridView, либо для GridConfig');
 			}
@@ -504,6 +541,20 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		if ($this->_gridPresent && null !== $this->_filterOnFocusOut) {
 			$this->grid->filterOnFocusOut = $this->_filterOnFocusOut;
 		}
+	}
+
+	/**
+	 * @return string[]|null
+	 */
+	public function getDefaultAttributes():?array {
+		return $this->_defaultAttributes;
+	}
+
+	/**
+	 * @param string[]|null $defaultAttributes
+	 */
+	public function setDefaultAttributes(?array $defaultAttributes):void {
+		$this->_defaultAttributes = $defaultAttributes;
 	}
 
 }

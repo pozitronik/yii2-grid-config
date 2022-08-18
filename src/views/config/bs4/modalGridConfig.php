@@ -15,9 +15,11 @@ use yii\web\View;
 
 <?php Modal::begin([
 	'id' => "grid-config-modal-{$model->grid->id}",
+	'size' => Modal::SIZE_LARGE,
 	'title' => '<div class="modal-title">Конфигурация:</div>',
 	'footer' => Html::submitButton('<i class="glyphicon glyphicon-save"></i> Сохранить', ['class' => 'btn btn-success', 'form' => 'grid-config']),//post button outside the form
-	'clientOptions' => ['backdrop' => false]
+	'clientOptions' => ['backdrop' => false],
+	'scrollable' => true
 ]); ?>
 <?= $this->render("../GridConfigForm", compact('model')) ?>
 <?php Modal::end(); ?>
