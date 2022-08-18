@@ -9,3 +9,7 @@ table.grid-config-sortables th:first-child {
 table.grid-config-sortables th:last-child {
 	width: 50%;
 }
+
+.table.grid-config-sortables td {
+	vertical-align: top;
+}
