@@ -275,11 +275,22 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	private function getDefaultAttributesLabels():?array {
 		if (null === $this->_defaultAttributes) return null;
+		return array_intersect_key($this->getColumnsLabels(), $this->_defaultAttributes);
+
+	}
+
+	/**
+	 * Returns an array of all attributes labels in ['attribute' => 'label'] format
+	 * @return string[]
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function getColumnsLabels():array {
 		$result = [];
 		foreach ($this->columns as $column) {
 			$columnObject = $this->getColumn($column);
-			if ((null !== $columnAttribute = $this->getColumnAttribute($columnObject)) && $columnAttribute === $column) {
-				$result[] = $this->getColumnLabel($columnObject);
+			if ((null !== $columnAttribute = $this->getColumnAttribute($columnObject))) {
+				$result[$columnAttribute] = $this->getColumnLabel($columnObject);
 			}
 		}
 		return $result;
