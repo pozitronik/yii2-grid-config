@@ -48,6 +48,8 @@ use yii\web\JsExpression;
 class GridConfig extends Model implements ViewContextInterface, BootstrapInterface {
 	use BootstrapTrait;
 
+	/*Константа для включения колонки управления в атрибуты по умолчанию*/
+	public const ACTION_COLUMN_ATTRIBUTE = '@action_column';
 	private const DEFAULT_SAVE_URL = 'config/apply';
 	public $user_id;
 
@@ -287,10 +289,15 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private function getColumnsLabels():array {
 		$result = [];
 		foreach ($this->columns as $column) {
-			$columnObject = $this->getColumn($column);
-			if ((null !== $columnAttribute = $this->getColumnAttribute($columnObject))) {
-				$result[$columnAttribute] = $this->getColumnLabel($columnObject);
+			$columnModel = $this->getColumn($column);
+			if (is_a($columnModel, ActionColumn::class)) {
+				$result[static::ACTION_COLUMN_ATTRIBUTE] = $columnModel->header;
+			} else {
+				if ((null !== $columnAttribute = $this->getColumnAttribute($columnModel))) {
+					$result[$columnAttribute] = $this->getColumnLabel($columnModel);
+				}
 			}
+
 		}
 		return $result;
 	}
