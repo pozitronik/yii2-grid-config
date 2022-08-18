@@ -10,6 +10,6 @@ table.grid-config-sortables th:last-child {
 	width: 50%;
 }
 
-.table.grid-config-sortables td {
+table.grid-config-sortables td {
 	vertical-align: top;
 }
