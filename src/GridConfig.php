@@ -35,6 +35,7 @@ use yii\web\JsExpression;
  * @property array[] $columns Все доступные колонки грида
  * @property array[] $visibleColumns Все отображаемые колонки грида (с сохранением порядка сортировки)
  * @property string[]|null $visibleColumnsLabels Сохранённый порядок отображаемых колонок в формате ['columnLabel'...]
+ * @property string[]|null $defaultColumns Колонки (в формате ['columnLabel'...], которые должны выводиться по умолчанию (если свой набор не сконфигурирован)
  *
  * @property-read string[] $visibleColumnsItems Набор строк заголовков для Sortable видимых колонок
  * @property-read string[] $hiddenColumnsItems Набор строк заголовков для Sortable скрытых колонок
@@ -67,6 +68,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private ?array $_visibleColumnsLabels = null;
 	private ?bool $_floatHeader = null;
 	private ?bool $_filterOnFocusOut = null;
+	private ?array $_defaultColumns = null;
 
 	private ?UsersOptions $_userOptions = null;
 
@@ -265,7 +267,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @throws Throwable
 	 */
 	public function getVisibleColumns():array {
-		if (null === $this->visibleColumnsLabels) $this->visibleColumnsLabels = array_keys($this->columns);//при несозданном конфиге отобразим все колонки
+		if (null === $this->visibleColumnsLabels) $this->visibleColumnsLabels = $this->defaultColumns??array_keys($this->columns);//при несозданном конфиге отобразим все колонки
 //		if ([] === $this->visibleColumnsLabels) return [new DataColumn(['label' => 'Нет отображаемых колонок', 'grid' => $this->grid])];
 		$result = [];
 		foreach ($this->visibleColumnsLabels as $columnsLabel) {
@@ -352,7 +354,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		}
 		/** @var object $gridClassName */
 		$gridClassName = (new ReflectionClass($this->grid))->getName();
-		if ($this->grid->id === $gridClassName::$autoIdPrefix.($gridClassName::$counter - 1)) {//ебать я хакир
+		if ($this->grid->id === $gridClassName::$autoIdPrefix.($gridClassName::$counter - 1)) {//ima fukkin haxxor
 			if (null === $this->_id) {
 				throw new InvalidConfigException('Нужно задать параметр id для конфигурируемого GridView, либо для GridConfig');
 			}
@@ -504,6 +506,20 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		if ($this->_gridPresent && null !== $this->_filterOnFocusOut) {
 			$this->grid->filterOnFocusOut = $this->_filterOnFocusOut;
 		}
+	}
+
+	/**
+	 * @return string[]|null
+	 */
+	public function getDefaultColumns():?array {
+		return $this->_defaultColumns;
+	}
+
+	/**
+	 * @param string[]|null $defaultColumns
+	 */
+	public function setDefaultColumns(?array $defaultColumns):void {
+		$this->_defaultColumns = $defaultColumns;
 	}
 
 }
