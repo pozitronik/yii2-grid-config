@@ -275,8 +275,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	private function getDefaultAttributesLabels():?array {
 		if (null === $this->_defaultAttributes) return null;
-		return array_intersect_key($this->getColumnsLabels(), $this->_defaultAttributes);
-
+		return array_intersect_key($this->getColumnsLabels(), array_flip($this->_defaultAttributes));
 	}
 
 	/**
