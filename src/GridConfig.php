@@ -121,28 +121,33 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public static function widget(array $config = []):string {
 		$gridConfig = new self($config);
-
-		/**
-		 * Если мы используем GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
-		 * Иначе просто модифицируем лайаут
-		 */
-		if ($gridConfig->grid->hasProperty('replaceTags')) {
-			/*Добавим кнопку вызова модалки настроек*/
-			$gridConfig->grid->replaceTags['{options}'] = $gridConfig->renderOptionsButton();
-			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
-			if (0 === mb_substr_count($gridConfig->grid->panelHeadingTemplate, '{options}')) {
-				$gridConfig->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$gridConfig->grid->panelHeadingTemplate;
-			}
-		} else {
-			$gridConfig->grid->layout = $gridConfig->renderOptionsButton().$gridConfig->grid->layout;
-		}
-
+		$gridConfig->injectOptionsButton();
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
 		foreach ($gridConfig->_defaultGridParams as $gridParamName => $gridParamValue) {
 			$gridConfig->grid->$gridParamName = $gridParamValue;
 		}
 
 		return $gridConfig->endGrid();
+	}
+
+	/**
+	 * Если используется GridView, поддерживающий расширенную конфигурацию лайаута, то кнопку настройки внедрим через эту конфигурацию
+	 * Иначе просто модифицируем лайаут
+	 * @return void
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private function injectOptionsButton():void {
+		if ($this->grid->hasProperty('replaceTags')) {
+			/*Добавим кнопку вызова модалки настроек*/
+			$this->grid->replaceTags['{options}'] = $this->renderOptionsButton();
+			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
+			if (0 === mb_substr_count($this->grid->panelHeadingTemplate, '{options}')) {
+				$this->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$this->grid->panelHeadingTemplate;
+			}
+		} else {
+			$this->grid->layout = $this->renderOptionsButton().$this->grid->layout;
+		}
 	}
 
 	/**
