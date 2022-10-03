@@ -140,7 +140,8 @@ GridConfig::widget([
 ]
 ```
 
-включит фильтрацию по изменению фокуса для всех вызовов GridConfig. При параметр `'filterOnFocusOut' => false`
+включит фильтрацию по изменению фокуса для всех вызовов GridConfig. Переданный
+параметр `'filterOnFocusOut' => false`
 
 ```php
 <?= GridConfig::widget([
