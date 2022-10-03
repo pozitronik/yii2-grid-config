@@ -110,6 +110,11 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
 		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
 		$this->_defaultGridParams = GridConfigModule::param('defaultGridParams', $this->_defaultGridParams);
+
+		/*Если параметры не были установлены при вызове виджета или в пользовательских настройках, то взять из конфига*/
+		$this->_filterOnFocusOut = $this->_filterOnFocusOut??ArrayHelper::getValue($this->_defaultGridParams, 'filterOnFocusOut', $this->_filterOnFocusOut);
+		$this->_floatHeader = $this->_floatHeader??ArrayHelper::getValue($this->_defaultGridParams, 'floatHeader', $this->_floatHeader);
+
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
 	}
@@ -124,10 +129,6 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$gridConfig = new self($config);
 		$gridConfig->injectOptionsButton();
 		$gridConfig->grid->columns = $gridConfig->visibleColumns;
-		foreach ($gridConfig->_defaultGridParams as $gridParamName => $gridParamValue) {
-			$gridConfig->grid->$gridParamName = $gridParamValue;
-		}
-
 		return $gridConfig->endGrid();
 	}
 
