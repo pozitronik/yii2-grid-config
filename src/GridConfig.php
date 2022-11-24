@@ -93,7 +93,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	public function rules():array {
 		return [
 			[['id', 'fromUrl'], 'string'],
-			[['pageSize'], 'integer'],
+			[['pageSize'], 'integer', 'max' => $this->maxPageSize],
 			[['pageSize'], 'filter', 'filter' => 'intval'],
 			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson', 'defaultColumns'], 'safe'],
 			[['floatHeader', 'filterOnFocusOut'], 'boolean']
