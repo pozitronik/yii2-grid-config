@@ -26,6 +26,7 @@ use yii\web\JsExpression;
  * @property string $id Используется для сохранения конфига, это ключ
  * @property string $saveUrl Урл для постинга сохраняемого конфига
  * @property null|int $pageSize Размер страницы пагинатора
+ * @property int $minPageSize Минимальное значение для задаваемого размера страницы
  * @property null|int $maxPageSize Максимальный лимит для задаваемого размера страницы
  * @property null|bool $floatHeader Плавающий заголовок (если поддерживается связанным GridView)
  * @property null|bool $filterOnFocusOut Фильтрация при потере фокуса любым фильтром
@@ -61,6 +62,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private ?string $_saveUrl = null;
 	private string $_visibleColumnsJson = '';
 	private ?int $_pageSize = null;
+	private int $_minPageSize = 1;
 	private ?int $_maxPageSize = 20;
 	private array $_defaultGridParams = [];
 
@@ -79,7 +81,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function attributeLabels():array {
 		return [
-			'pageSize' => "Максимальное количество записей на одной странице (0 - {$this->_maxPageSize})",
+			'pageSize' => "Максимальное количество записей на одной странице ({$this->_minPageSize} – {$this->_maxPageSize})",
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
 			'floatHeader' => 'Плавающий заголовок',
 			'filterOnFocusOut' => 'Фильтровать при изменении фильтров',
@@ -93,7 +95,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	public function rules():array {
 		return [
 			[['id', 'fromUrl'], 'string'],
-			[['pageSize'], 'integer', 'max' => $this->maxPageSize],
+			[['pageSize'], 'integer', 'min' => $this->minPageSize, 'max' => $this->maxPageSize],
 			[['pageSize'], 'filter', 'filter' => 'intval'],
 			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson', 'defaultColumns'], 'safe'],
 			[['floatHeader', 'filterOnFocusOut'], 'boolean']
@@ -108,6 +110,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->user_id = $this->user_id??Yii::$app->user->id;
 		$this->_userOptions = new UsersOptions(['user_id' => $this->user_id]);
 		$this->_saveUrl = $this->_saveUrl??GridConfigModule::param('saveUrl', GridConfigModule::to(self::DEFAULT_SAVE_URL));
+		$this->_minPageSize = GridConfigModule::param('minPageSize', $this->_minPageSize);
 		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
 		$this->_defaultGridParams = GridConfigModule::param('defaultGridParams', $this->_defaultGridParams);
 
@@ -363,7 +366,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @param int|null $pageSize
 	 */
 	public function setPageSize(?int $pageSize):void {
-		$this->_pageSize = ($pageSize > $this->_maxPageSize)?$this->_maxPageSize:$pageSize;
+		$this->_pageSize = $pageSize < $this->_minPageSize ? $this->_minPageSize : ($pageSize > $this->_maxPageSize ? $this->_maxPageSize : $pageSize);
 		if ($this->_gridPresent && false !== $pagination = $this->grid->dataProvider->pagination) {
 			$pagination->pageSize = $this->_pageSize;
 			$pagination->pageSizeLimit = false;
@@ -503,10 +506,24 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getMinPageSize():int {
+		return $this->_minPageSize;
+	}
+
+	/**
 	 * @return int|null
 	 */
 	public function getMaxPageSize():?int {
 		return $this->_maxPageSize;
+	}
+
+	/**
+	 * @param int $minPageSize
+	 */
+	public function setMinPageSize(int $minPageSize):void {
+		$this->_minPageSize = $minPageSize;
 	}
 
 	/**
