@@ -27,7 +27,7 @@ use yii\web\JsExpression;
  * @property string $saveUrl Урл для постинга сохраняемого конфига
  * @property null|int $pageSize Размер страницы пагинатора
  * @property int $minPageSize Минимальное значение для задаваемого размера страницы
- * @property null|int $maxPageSize Максимальный лимит для задаваемого размера страницы
+ * @property int $maxPageSize Максимальный лимит для задаваемого размера страницы
  * @property null|bool $floatHeader Плавающий заголовок (если поддерживается связанным GridView)
  * @property null|bool $filterOnFocusOut Фильтрация при потере фокуса любым фильтром
  *
@@ -63,7 +63,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private string $_visibleColumnsJson = '';
 	private ?int $_pageSize = null;
 	private int $_minPageSize = 1;
-	private ?int $_maxPageSize = 20;
+	private int $_maxPageSize = 20;
 	private array $_defaultGridParams = [];
 
 	/**
@@ -513,9 +513,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
-	public function getMaxPageSize():?int {
+	public function getMaxPageSize():int {
 		return $this->_maxPageSize;
 	}
 
@@ -527,9 +527,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	}
 
 	/**
-	 * @param int|null $maxPageSize
+	 * @param int $maxPageSize
 	 */
-	public function setMaxPageSize(?int $maxPageSize):void {
+	public function setMaxPageSize(int $maxPageSize):void {
 		$this->_maxPageSize = $maxPageSize;
 	}
 
