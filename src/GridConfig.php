@@ -357,14 +357,18 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @return int|null
 	 */
 	public function getPageSize():?int {
-		return ($this->_gridPresent && false !== $pagination = $this->grid->dataProvider->pagination)?$pagination->pageSize:$this->_pageSize;
+		return ($this->_gridPresent && false !== $pagination = $this->grid->dataProvider->pagination)
+			?$pagination->pageSize
+			:$this->_pageSize;
 	}
 
 	/**
 	 * @param int|null $pageSize
 	 */
 	public function setPageSize(?int $pageSize):void {
-		$this->_pageSize = $pageSize < $this->_minPageSize ? $this->_minPageSize : ($pageSize > $this->_maxPageSize ? $this->_maxPageSize : $pageSize);
+		$this->_pageSize = $pageSize < $this->_minPageSize
+			?$this->_minPageSize
+			:($pageSize > $this->_maxPageSize?$this->_maxPageSize:$pageSize);
 		if ($this->_gridPresent && false !== $pagination = $this->grid->dataProvider->pagination) {
 			$pagination->pageSize = $this->_pageSize;
 			$pagination->pageSizeLimit = false;
