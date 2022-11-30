@@ -296,10 +296,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			$columnModel = $this->getColumn($column);
 			if (is_a($columnModel, ActionColumn::class)) {
 				$result[static::ACTION_COLUMN_ATTRIBUTE] = $columnModel->header;
-			} else {
-				if ((null !== $columnAttribute = $this->getColumnAttribute($columnModel))) {
-					$result[$columnAttribute] = $this->getColumnLabel($columnModel);
-				}
+			} else if ((null !== $columnAttribute = $this->getColumnAttribute($columnModel))) {
+				$result[$columnAttribute] = $this->getColumnLabel($columnModel);
 			}
 
 		}
