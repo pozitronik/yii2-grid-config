@@ -41,7 +41,7 @@ use yii\web\JsExpression;
  * @property-read string[] $visibleColumnsItems Набор строк заголовков для Sortable видимых колонок
  * @property-read string[] $hiddenColumnsItems Набор строк заголовков для Sortable скрытых колонок
  *
- * @property-read string $viewPath Путь к шаблонам компонента
+ * @property string $viewPath Путь к шаблонам компонента
  * @property string $visibleColumnsJson Виртуальный атрибут для передачи сериализованного набора данных из Sortable-виджета (https://github.com/lukasoppermann/html5sortable)
  *
  * @property null|int $user_id id пользователя, чьи настройки применяются к гриду (по умолчанию - текущий)
@@ -65,6 +65,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	private int $_minPageSize = 1;
 	private int $_maxPageSize = 20;
 	private array $_defaultGridParams = [];
+	private ?string $_viewPath = null;
 
 	/**
 	 * @var string[]|null
@@ -113,6 +114,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_minPageSize = GridConfigModule::param('minPageSize', $this->_minPageSize);
 		$this->_maxPageSize = GridConfigModule::param('maxPageSize', $this->_maxPageSize);
 		$this->_defaultGridParams = GridConfigModule::param('defaultGridParams', $this->_defaultGridParams);
+		$this->_viewPath = GridConfigModule::param('viewPath');
 
 		/*Если параметры не были установлены при вызове виджета или в пользовательских настройках, то взять из конфига*/
 		$this->_filterOnFocusOut = $this->_filterOnFocusOut??ArrayHelper::getValue($this->_defaultGridParams, 'filterOnFocusOut', $this->_filterOnFocusOut);
@@ -163,7 +165,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function endGrid():string {
 		$this->grid::end();
-		$bsView = $this->isBs(4)?"bs4":"bs3";
+		$bsView = $this->isBs(4)
+			?"bs4"
+			:"bs3";
 		return Yii::$app->view->render("config/{$bsView}/modalGridConfig", ['model' => $this], $this);
 	}
 
@@ -425,8 +429,17 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 * @inheritDoc
 	 */
 	public function getViewPath():string {
-		$class = new ReflectionClass($this);
-		return dirname($class->getFileName()).DIRECTORY_SEPARATOR.'views';
+		if (null === $this->_viewPath) {
+			$this->_viewPath = dirname((new ReflectionClass($this))->getFileName()).DIRECTORY_SEPARATOR.'views';
+		}
+		return $this->_viewPath;
+	}
+
+	/**
+	 * @param string $viewPath
+	 */
+	public function setViewPath(string $viewPath):void {
+		$this->_viewPath = $viewPath;
 	}
 
 	/**
