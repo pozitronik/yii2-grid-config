@@ -168,7 +168,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$bsView = $this->isBs(4)
 			?"bs4"
 			:"bs3";
-		return Yii::$app->view->render("config/{$bsView}/modalGridConfig", ['model' => $this], $this);
+		return Yii::$app->view->render("{$bsView}/modalGridConfig", ['model' => $this], $this);
 	}
 
 	/**
