@@ -149,7 +149,9 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			$this->grid->replaceTags['{options}'] = $this->renderOptionsButton();
 			/*Если позиция кнопки не сконфигурирована в гриде вручную, добавим её в самое начало*/
 			if (0 === mb_substr_count($this->grid->panelHeadingTemplate, '{options}')) {
-				$this->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()?'<div class="float-left m-r-sm">{options}</div>':'<div class="pull-left m-r-sm">{options}</div>').$this->grid->panelHeadingTemplate;
+				$this->grid->panelHeadingTemplate = (BootstrapHelper::isBs4()
+						?'<div class="float-left m-r-sm">{options}</div>'
+						:'<div class="pull-left m-r-sm">{options}</div>').$this->grid->panelHeadingTemplate;
 			}
 		} else {
 			$this->grid->layout = $this->renderOptionsButton().$this->grid->layout;
