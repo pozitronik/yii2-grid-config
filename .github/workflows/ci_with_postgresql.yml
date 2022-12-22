@@ -2,6 +2,8 @@ name: Run tests
 on:
   pull_request:
     branches: [ master ]
+  push:
+    branches: [ master ]
 
 env:
   DB_DSN: "pgsql:host=127.0.0.1;port=5432;dbname=yii2-grid-config"
