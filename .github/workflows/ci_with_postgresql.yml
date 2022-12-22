@@ -1,4 +1,4 @@
-name: CI with PostgreSQL
+name: Run tests
 on:
   pull_request:
     branches: [ master ]
