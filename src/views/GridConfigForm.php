@@ -99,6 +99,20 @@ GridConfigAssets::register($this);
 		</div>
 	</div>
 <?php endif; ?>
+<?php if ($model->grid->hasProperty('floatPageSummary')): ?>
+	<div class="row">
+		<div class="col-md-12">
+			<?= $form->field($model, 'floatPageSummary')->widget(SwitchInput::class, [
+				'tristate' => false,
+				'pluginOptions' => [
+					'size' => 'mini',
+					'onText' => '<i class="fa fa-check"></i>',
+					'offText' => null
+				],
+			]) ?>
+		</div>
+	</div>
+<?php endif; ?>
 <div class="row">
 	<div class="col-md-12">
 		<?= $form->field($model, 'filterOnFocusOut')->widget(SwitchInput::class, [

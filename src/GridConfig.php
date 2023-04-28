@@ -72,6 +72,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	private ?array $_visibleColumnsLabels = null;
 	private ?bool $_floatHeader = null;
+	private ?bool $_floatPageSummary = null;
 	private ?bool $_filterOnFocusOut = null;
 	private ?array $_defaultAttributes = null;
 
@@ -86,7 +87,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			'visibleColumnsLabels' => 'Выбор видимых колонок',
 			'floatHeader' => 'Плавающий заголовок',
 			'filterOnFocusOut' => 'Фильтровать при изменении фильтров',
-			'defaultColumns' => 'Поля по умолчанию'
+			'defaultColumns' => 'Поля по умолчанию',
+			'floatPageSummary' => 'Плавающая осн. информация'
 		];
 	}
 
@@ -99,7 +101,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 			[['pageSize'], 'integer', 'min' => $this->minPageSize, 'max' => $this->maxPageSize],
 			[['pageSize'], 'filter', 'filter' => 'intval'],
 			[['columns', 'visibleColumns', 'visibleColumnsLabels', 'visibleColumnsJson', 'defaultColumns'], 'safe'],
-			[['floatHeader', 'filterOnFocusOut'], 'boolean']
+			[['floatHeader', 'filterOnFocusOut', 'floatPageSummary'], 'boolean']
 		];
 	}
 
@@ -119,6 +121,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		/*Если параметры не были установлены при вызове виджета или в пользовательских настройках, то взять из конфига*/
 		$this->_filterOnFocusOut = $this->_filterOnFocusOut??ArrayHelper::getValue($this->_defaultGridParams, 'filterOnFocusOut', $this->_filterOnFocusOut);
 		$this->_floatHeader = $this->_floatHeader??ArrayHelper::getValue($this->_defaultGridParams, 'floatHeader', $this->_floatHeader);
+		$this->_floatPageSummary = $this->_floatPageSummary??ArrayHelper::getValue($this->_defaultGridParams, 'floatPageSummary', $this->_floatPageSummary);
 
 		if ($this->_gridPresent) $this->load($this->_userOptions->get($this->formName().$this->id), '');
 		$this->nameColumns();
@@ -562,7 +565,42 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 		$this->_floatHeader = $floatHeader;
 		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader')) {
 			$this->grid->floatHeader = $this->_floatHeader;
+			if (true === $this->_floatHeader) {
+				$this->setContainerOptions();
+			}
 		}
+	}
+
+	/**
+	 * @return bool|null
+	 */
+	public function getFloatPageSummary():?bool {
+		return $this->_floatPageSummary;
+	}
+
+	/**
+	 * @param bool|null $floatPageSummary
+	 * @noinspection PhpUndefinedFieldInspection
+	 */
+	public function setFloatPageSummary(?bool $floatPageSummary):void {
+		$this->_floatPageSummary = $floatPageSummary;
+		if ($this->_gridPresent && null !== $this->_floatPageSummary && false !== $this->grid->hasProperty('floatPageSummary')) {
+			$this->grid->floatPageSummary = $this->_floatPageSummary;
+			if (true === $this->_floatPageSummary) {
+				$this->setContainerOptions();
+			}
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function setContainerOptions(): void
+	{
+		$this->grid->containerOptions = ArrayHelper::merge(
+			['style' => 'height: 70vh'],
+			$this->grid->containerOptions
+		);
 	}
 
 	/**
