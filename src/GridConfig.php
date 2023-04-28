@@ -592,6 +592,7 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 
 	/**
 	 * @return void
+	 * @noinspection PhpUndefinedFieldInspection
 	 */
 	private function setContainerOptions():void {
 		if (false !== $this->grid->hasProperty('containerOptions')) {
