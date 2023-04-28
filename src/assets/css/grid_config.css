@@ -13,3 +13,15 @@ table.grid-config-sortables th:last-child {
 table.grid-config-sortables td {
 	vertical-align: top;
 }
+
+ul#hiddenColumnsItems, ul#visibleColumnsItems {
+	min-height: 45px;
+}
+
+.kv-float-header {
+	z-index: 10;
+}
+
+.grid-container-fixed-height {
+	height: 70vh;
+}
