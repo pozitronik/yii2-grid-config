@@ -2,7 +2,7 @@ GridConfig
 ==========
 Конфигурирование GridView с сохранением настроек каждого пользователя.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pozitronik/yii2-grid-config/CI%20with%20PostgreSQL)
+[![Build Status](https://github.com/pozitronik/yii2-grid-config/actions/workflows/ci_with_postgresql.yml/badge.svg)](https://github.com/pozitronik/yii2-grid-config/actions)
 
 Installation
 ------------
