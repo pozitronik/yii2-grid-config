@@ -595,12 +595,13 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	/**
 	 * @return void
 	 */
-	public function setContainerOptions(): void
-	{
-		$this->grid->containerOptions = ArrayHelper::merge(
-			['style' => 'height: 70vh'],
-			$this->grid->containerOptions
-		);
+	private function setContainerOptions():void {
+		if (false !== $this->grid->hasProperty('containerOptions')) {
+			$this->grid->containerOptions = ArrayHelper::merge(
+				['class' => 'grid-container-fixed-height'],
+				$this->grid->containerOptions
+			);
+		}
 	}
 
 	/**

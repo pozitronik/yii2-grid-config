@@ -21,3 +21,7 @@ ul#hiddenColumnsItems, ul#visibleColumnsItems {
 .kv-float-header {
 	z-index: 10;
 }
+
+.grid-container-fixed-height {
+	height: 70vh;
+}
