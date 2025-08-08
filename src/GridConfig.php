@@ -563,10 +563,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function setFloatHeader(?bool $floatHeader):void {
 		$this->_floatHeader = $floatHeader;
-		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader')) {
-			if (true === $this->grid->floatHeader = $this->_floatHeader) {
-				$this->setContainerOptions();
-			}
+		if ($this->_gridPresent && null !== $this->_floatHeader && false !== $this->grid->hasProperty('floatHeader') && true === $this->grid->floatHeader = $this->_floatHeader) {
+			$this->setContainerOptions();
 		}
 	}
 
@@ -583,10 +581,8 @@ class GridConfig extends Model implements ViewContextInterface, BootstrapInterfa
 	 */
 	public function setFloatPageSummary(?bool $floatPageSummary):void {
 		$this->_floatPageSummary = $floatPageSummary;
-		if ($this->_gridPresent && null !== $this->_floatPageSummary && false !== $this->grid->hasProperty('floatPageSummary')) {
-			if (true === $this->grid->floatPageSummary = $this->_floatPageSummary) {
-				$this->setContainerOptions();
-			}
+		if ($this->_gridPresent && null !== $this->_floatPageSummary && false !== $this->grid->hasProperty('floatPageSummary') && true === $this->grid->floatPageSummary = $this->_floatPageSummary) {
+			$this->setContainerOptions();
 		}
 	}
 
